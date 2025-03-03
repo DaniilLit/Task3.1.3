@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html xmlns:c="http://java.sun.com/xml/ns/javaee"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<h2>All Users</h2>
+<br>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Age</th>
+    <th>lastName</th>
+    <th>email</th>
+    <th>Operations</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <tr th:each="user : ${users}">
+    <td th:text="${user.firstName}">Name</td>
+    <td th:text="${user.age}">Age</td>
+    <td th:text="${user.lastName}">Name</td>
+    <td th:text="${user.email}">Age</td>
+    <td>
+      <a th:href="@{/updateUser(userId=${user.id})}">
+        <button type="button">Update</button>
+      </a>
+      <form action="#" th:action="@{/deleteUser}" method="post">
+        <input type="hidden" name="userId" th:value="${user.id}" />
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+
+  </tbody>
+</table>
+<input type = "button" value = "add"
+       onclick="window.location.href = 'addUser'"/>
+<form th:action="@{/logout}" th:method="post">
+  <button type="submit">Выйти</button>
+</form>
+</body>
+</html>
