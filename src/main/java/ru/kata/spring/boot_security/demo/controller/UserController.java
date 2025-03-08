@@ -66,17 +66,5 @@ public class UserController {
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "/admin/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, ModelMap model) {
-        model.addAttribute("user", userService.getUser(id));
-        model.addAttribute("roles", userService.getAllRoles());
-        return "edit";
-    }
-
-    @PatchMapping(value = "/admin/edit/{id}")
-    public String edit(@ModelAttribute("user") @Valid User user) {
-        userService.editUser(user);
-        return "redirect:/admin";
-    }
 
 }

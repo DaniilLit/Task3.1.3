@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
-
+import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +25,7 @@ public class AdminController {
      public AdminController(UserService userService) {
          this.userService = userService;
      }
+
     @GetMapping(value = "/")
     public String getAllUsers(Principal principal, ModelMap model) {
         List<User> users = userService.getAllUsers();
@@ -56,6 +56,25 @@ public class AdminController {
         userService.saveUser(user);
         return "redirect:/admin/";
     }
+
+    @GetMapping(value = "edit/{id}")
+    public String editUser(@PathVariable("id") Long id, ModelMap model) {
+        model.addAttribute("user", userService.getUser(id));
+        model.addAttribute("roles", userService.getAllRoles());
+        return "edit";
     }
+
+    @PatchMapping(value = "edit/{id}")
+    public String edit(@ModelAttribute("user") @Valid User user) {
+        userService.editUser(user);
+        return "redirect:/admin/";
+    }
+
+    @DeleteMapping(value = "delete/{id}")
+    public String delete(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+        return "redirect:/admin";
+    }
+}
 
 

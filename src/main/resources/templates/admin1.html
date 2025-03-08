@@ -26,10 +26,10 @@
     <td th:text="${user.lastName}">Name</td>
     <td th:text="${user.email}">Age</td>
     <td>
-      <a th:href="@{/updateUser(userId=${user.id})}">
+      <a th:href="@{/admin/(userId=${user.id})}">
         <button type="button">Update</button>
       </a>
-      <form action="#" th:action="@{/deleteUser}" method="post">
+      <form action="#" th:action="@{/admin/delete/user.id}" method="post">
         <input type="hidden" name="userId" th:value="${user.id}" />
         <button type="submit">Delete</button>
       </form>
