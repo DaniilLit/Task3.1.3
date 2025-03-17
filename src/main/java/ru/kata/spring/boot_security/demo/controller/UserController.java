@@ -4,6 +4,7 @@ import org.hibernate.internal.build.AllowPrintStacktrace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,23 +43,24 @@ public class UserController {
         return "registration";
     }
 
-    @PostMapping(value = "/registration")
-    public String addRegistration(@ModelAttribute("user") @Valid User user) {
 
-        userService.saveUser(user);
-        User user1 = userService.findUserByEmail(user.getEmail());
-        System.out.println(user1);
 
-        return "redirect:/login";
+    @GetMapping("/user")
+    public String userPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/login"; // Если пользователь не аутентифицирован
+        }
+
+        User user = userService.findUserByEmail(userDetails.getUsername());
+
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found");
+            return "error"; // Можно создать страницу с ошибкой
+        }
+
+        model.addAttribute("user", user); // Объявляем "user" перед передаче в шаблон
+        return "user"; // user.html
     }
-
-    @GetMapping(value = "/user")
-    public String getUser(ModelMap model) {
-        List<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "user";
-    }
-
     @DeleteMapping(value = "/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
         userService.deleteUser(id);
