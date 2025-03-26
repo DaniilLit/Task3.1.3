@@ -83,9 +83,17 @@ public class UserServiceImp implements UserService{
     @Override
     @Transactional
     public void editUser(User user) {
+        User existingUser = userRepo.findById(user.getId()).orElseThrow();
+
+        if (!user.getPassword().equals(existingUser.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(existingUser.getRoles());
+        }
+
         userRepo.save(user);
     }
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {

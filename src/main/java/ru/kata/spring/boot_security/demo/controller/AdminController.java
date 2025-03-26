@@ -1,7 +1,8 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -74,6 +75,24 @@ public class AdminController {
     public String delete(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/";
+    }
+
+
+    @GetMapping("/user")
+    public String userPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/login"; // Если пользователь не аутентифицирован
+        }
+
+        User user = userService.findUserByEmail(userDetails.getUsername());
+
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found");
+            return "error"; // Можно создать страницу с ошибкой
+        }
+
+        model.addAttribute("user", user); // Объявляем "user" перед передаче в шаблон
+        return "user"; // user.html
     }
 }
 
